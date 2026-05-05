@@ -1,0 +1,85 @@
+[
+  {
+    "id": "modern-restaurant",
+    "name": "مطعم عصري",
+    "icon": "fa-utensils",
+    "design": {
+      "title": "عنوان المطعم",
+      "subtitle": "جرب المذاق الفريد",
+      "bgColor": "#2d1e1e",
+      "titleColor": "#ff6b4a",
+      "subtitleColor": "#ffe0c0",
+      "fontTitle": "Cairo",
+      "fontSubtitle": "Tajawal",
+      "elements": [
+        { "type": "text", "content": "🔥 خصم 20%", "x": 0.5, "y": 0.8, "fontSize": 36, "fontWeight": "bold", "color": "#ffd700" }
+      ]
+    }
+  },
+  {
+    "id": "tech-blue",
+    "name": "تقني أزرق",
+    "icon": "fa-microchip",
+    "design": {
+      "title": "ابتكار بلا حدود",
+      "subtitle": "حلول تقنية متكاملة",
+      "bgColor": "#0a1a2a",
+      "titleColor": "#4dc9f6",
+      "subtitleColor": "#aad4f0",
+      "fontTitle": "Tajawal",
+      "fontSubtitle": "Cairo",
+      "elements": [
+        { "type": "text", "content": "🚀 السرعة والدقة", "x": 0.5, "y": 0.7, "fontSize": 28, "color": "#ffffff" }
+      ]
+    }
+  },
+  {
+    "id": "education",
+    "name": "تعليمي",
+    "icon": "fa-graduation-cap",
+    "design": {
+      "title": "تعلّم بذكاء",
+      "subtitle": "دورات تدريبية متطورة",
+      "bgColor": "#f9f3e7",
+      "titleColor": "#2c3e50",
+      "subtitleColor": "#e67e22",
+      "fontTitle": "Cairo",
+      "fontSubtitle": "Tajawal",
+      "elements": [
+        { "type": "text", "content": "📚 سجل الآن", "x": 0.5, "y": 0.75, "fontSize": 30, "color": "#c0392b" }
+      ]
+    }
+  },
+  {
+    "id": "sport",
+    "name": "رياضي",
+    "icon": "fa-futbol",
+    "design": {
+      "title": "تحدى حدودك",
+      "subtitle": "نادي اللياقة الأول",
+      "bgColor": "#1e1e1e",
+      "titleColor": "#f1c40f",
+      "subtitleColor": "#ecf0f1",
+      "fontTitle": "Tajawal",
+      "fontSubtitle": "Cairo",
+      "elements": [
+        { "type": "text", "content": "💪 انضم اليوم", "x": 0.5, "y": 0.8, "fontSize": 32, "color": "#e74c3c" }
+      ]
+    }
+  },
+  {
+    "id": "elegant",
+    "name": "أنيق",
+    "icon": "fa-gem",
+    "design": {
+      "title": "فخامة لا تُضاهى",
+      "subtitle": "للأذواق الراقية",
+      "bgColor": "#3b2f2f",
+      "titleColor": "#d4af37",
+      "subtitleColor": "#f5e6cc",
+      "fontTitle": "Cairo",
+      "fontSubtitle": "Tajawal",
+      "elements": []
+    }
+  }
+]

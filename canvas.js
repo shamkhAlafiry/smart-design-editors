@@ -1,0 +1,41 @@
+const canvas = new fabric.Canvas('designCanvas', { width: 800, height: 600, backgroundColor: '#1e1e2f', preserveObjectStacking: true, renderOnAddRemove: false });
+let history = [], historyIdx = -1;
+const MAX_HISTORY = 30;
+function saveState() { const json = JSON.stringify(canvas.toJSON()); if (historyIdx < history.length - 1) { history = history.slice(0, historyIdx + 1); } history.push(json); if (history.length > MAX_HISTORY) history.shift(); historyIdx = history.length - 1; }
+function undo() { if (historyIdx > 0) { historyIdx--; canvas.loadFromJSON(history[historyIdx], () => { canvas.renderAll(); updateLayersList(); }); } }
+function redo() { if (historyIdx < history.length - 1) { historyIdx++; canvas.loadFromJSON(history[historyIdx], () => { canvas.renderAll(); updateLayersList(); }); } }
+let rafPending = false;
+const nativeRender = canvas.renderAll.bind(canvas);
+canvas.renderAll = function() { if (!rafPending) { rafPending = true; requestAnimationFrame(() => { nativeRender(); rafPending = false; }); } };
+canvas.forceRender = function() { rafPending = false; nativeRender(); };
+function addText(content = 'اكتب هنا', options = {}) { const text = new fabric.IText(content, { left: 100, top: 100, fontFamily: options.fontFamily || 'Cairo', fill: options.fill || '#ffffff', fontSize: options.fontSize || 40, fontWeight: options.fontWeight || 'normal', textAlign: 'center', editable: false }); canvas.add(text); canvas.setActiveObject(text); canvas.forceRender(); saveState(); updateLayersList(); return text; }
+function addImageFromFile(file) { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const maxDim = 500; const ratio = Math.min(maxDim / img.width, maxDim / img.height); const w = img.width * ratio, h = img.height * ratio; fabric.Image.fromURL(e.target.result, (fImg) => { fImg.set({ left: (canvas.width - w) / 2, top: (canvas.height - h) / 2, scaleX: w / fImg.width, scaleY: h / fImg.height, lockUniScaling: true }); canvas.add(fImg); canvas.forceRender(); saveState(); updateLayersList(); }); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+function setCanvasSize(w, h) { canvas.setWidth(w); canvas.setHeight(h); canvas.forceRender(); document.getElementById('canvasWrapper').style.width = w + 'px'; document.getElementById('canvasWrapper').style.height = h + 'px'; saveState(); }
+const inlineEditor = document.getElementById('inlineTextEditor');
+let editingTarget = null;
+function startInlineEdit(textObj) { if (!textObj || textObj.type !== 'i-text') return; editingTarget = textObj; const zoom = canvas.getZoom(); inlineEditor.style.left = (textObj.left * zoom) + 'px'; inlineEditor.style.top = (textObj.top * zoom) + 'px'; inlineEditor.style.font = (textObj.fontSize * zoom) + 'px ' + textObj.fontFamily; inlineEditor.style.color = textObj.fill; inlineEditor.style.display = 'block'; inlineEditor.textContent = textObj.text; inlineEditor.focus(); textObj.set({ opacity: 0 }); canvas.forceRender(); }
+function finishInlineEdit(apply = true) { if (!editingTarget) return; if (apply) { editingTarget.set({ text: inlineEditor.textContent || ' ' }); } editingTarget.set({ opacity: 1 }); inlineEditor.style.display = 'none'; editingTarget = null; canvas.forceRender(); saveState(); }
+inlineEditor.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); finishInlineEdit(false); } if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); finishInlineEdit(true); } });
+inlineEditor.addEventListener('blur', () => finishInlineEdit(true));
+canvas.on('mouse:dblclick', (opt) => { const target = opt.target; if (target && target.type === 'i-text') startInlineEdit(target); });
+function updateLayersList() { const list = document.getElementById('layersList'); if (!list) return; list.innerHTML = ''; canvas.getObjects().slice().reverse().forEach((obj, i) => { const li = document.createElement('li'); li.textContent = obj.type === 'i-text' ? '✏️ ' + (obj.text || '').substring(0, 15) : '🖼️ صورة'; if (obj === canvas.getActiveObject()) li.classList.add('active'); li.addEventListener('click', () => { const idx = canvas.getObjects().length - 1 - i; const objToSelect = canvas.getObjects()[idx]; if (objToSelect) { canvas.setActiveObject(objToSelect); canvas.forceRender(); updateLayersList(); } }); list.appendChild(li); }); }
+canvas.on('object:added', updateLayersList); canvas.on('object:removed', updateLayersList); canvas.on('selection:created', updateLayersList); canvas.on('selection:updated', updateLayersList); canvas.on('selection:cleared', updateLayersList);
+function bringForward() { const obj = canvas.getActiveObject(); if (obj) { const idx = canvas.getObjects().indexOf(obj); if (idx < canvas.getObjects().length - 1) { canvas.moveTo(obj, idx + 1); canvas.forceRender(); saveState(); updateLayersList(); } } }
+function sendBackward() { const obj = canvas.getActiveObject(); if (obj) { const idx = canvas.getObjects().indexOf(obj); if (idx > 0) { canvas.moveTo(obj, idx - 1); canvas.forceRender(); saveState(); updateLayersList(); } } }
+function applyEffect(effect, value) { const obj = canvas.getActiveObject(); if (!obj || obj.type !== 'i-text') return; switch(effect) { case 'opacity': obj.set({ opacity: parseFloat(value) }); break; case 'shadow': obj.set({ shadow: value ? 'rgba(0,0,0,0.6) 4px 4px 6px' : null }); break; case 'stroke': obj.set({ stroke: document.getElementById('strokeColor').value, strokeWidth: parseInt(value) }); break; case 'rotation': obj.set({ angle: parseInt(value) }); break; } canvas.forceRender(); saveState(); }
+function getActive() { return canvas.getActiveObject(); }
+function alignLeft() { const o=getActive(); if(o){ o.set({left:0}); o.setCoords(); canvas.forceRender(); saveState(); } }
+function alignCenterH() { const o=getActive(); if(o){ o.set({left:canvas.width/2, originX:'center'}); o.setCoords(); canvas.forceRender(); saveState(); } }
+function alignRight() { const o=getActive(); if(o){ o.set({left:canvas.width, originX:'right'}); o.setCoords(); canvas.forceRender(); saveState(); } }
+function alignTop() { const o=getActive(); if(o){ o.set({top:0}); o.setCoords(); canvas.forceRender(); saveState(); } }
+function alignMiddleV() { const o=getActive(); if(o){ o.set({top:canvas.height/2, originY:'center'}); o.setCoords(); canvas.forceRender(); saveState(); } }
+function alignBottom() { const o=getActive(); if(o){ o.set({top:canvas.height, originY:'bottom'}); o.setCoords(); canvas.forceRender(); saveState(); } }
+let isPenActive = false, penPoints = [], penPath = null;
+function enablePenTool() { isPenActive = true; penPoints = []; canvas.selection = false; canvas.defaultCursor = 'crosshair'; alert('أداة القلم نشطة. انقر على التصميم لإضافة نقاط. اضغط Escape للإنهاء.'); }
+function disablePenTool() { isPenActive = false; canvas.selection = true; canvas.defaultCursor = 'default'; if (penPath) { canvas.remove(penPath); canvas.forceRender(); } penPath = null; penPoints = []; }
+canvas.on('mouse:down', (opt) => { if (!isPenActive) return; const pointer = canvas.getPointer(opt.e); penPoints.push({ x: pointer.x, y: pointer.y }); if (penPath) canvas.remove(penPath); if (penPoints.length >= 3) { let d = ''; penPoints.forEach((p, i) => { d += (i===0?'M':'L') + p.x + ',' + p.y; }); d += ' Z'; penPath = new fabric.Path(d, { fill: 'rgba(108,99,255,0.2)', stroke: '#6c63ff', strokeWidth: 2, selectable: false, evented: false }); canvas.add(penPath); canvas.forceRender(); } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isPenActive) { disablePenTool(); } });
+function setBackgroundColor(color) { canvas.backgroundColor = color; canvas.forceRender(); saveState(); }
+function clearCanvas() { canvas.clear(); canvas.backgroundColor = '#1e1e2f'; canvas.forceRender(); saveState(); updateLayersList(); }
+function exportPNG() { const link = document.createElement('a'); link.download = 'تصميم-ذكي.png'; link.href = canvas.toDataURL({ format: 'png', quality: 1 }); link.click(); }
+saveState(); updateLayersList();
