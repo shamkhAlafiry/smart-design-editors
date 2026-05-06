@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>محرر التصميم الذكي AI</title>
+    
+    <!-- الخطوط -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Fabric.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- ✅ CSS محلي (الرابط صحيح: الملف في نفس المجلد) -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- أنماط إضافية -->
     <style>
         .canvas-toolbar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#0d0d16;border-bottom:1px solid #1e1e30}
         .quick-tools{display:flex;gap:8px}
@@ -21,23 +31,28 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- الشريط الجانبي -->
         <aside class="sidebar">
             <div class="logo"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>مُصمِّم AI</span> <span class="version">v3.0</span></div>
+            
             <div class="panel">
                 <h3>🧠 تصميم بالذكاء الاصطناعي</h3>
                 <textarea id="aiPrompt" placeholder="مثال: بوستر لمطعم برجر عصري..." rows="3"></textarea>
                 <button id="generateAIBtn" class="btn-primary"><i class="fa-solid fa-robot"></i> توليد التصميم</button>
                 <div id="aiLoader" class="loader" style="display:none;">جارٍ التصميم...</div>
             </div>
+            
             <div class="panel">
                 <h3>✨ مولد شعارات</h3>
                 <textarea id="logoPrompt" placeholder="اسم الشركة، المجال..." rows="2"></textarea>
                 <button id="generateLogoBtn" class="btn-primary"><i class="fa-solid fa-signature"></i> توليد شعار</button>
             </div>
+            
             <div class="panel">
                 <h3>📚 القوالب الذكية</h3>
                 <div id="templateGrid" class="template-grid"></div>
             </div>
+            
             <div class="panel">
                 <h3>✏️ أدوات يدوية</h3>
                 <button id="addTextBtn" class="btn-secondary"><i class="fa-solid fa-font"></i> إضافة نص</button>
@@ -46,6 +61,7 @@
                 <div class="color-picker-group"><label>لون الخلفية:</label><input type="color" id="bgColorPicker" value="#1e1e2f"></div>
                 <button id="randomPaletteBtn" class="btn-secondary"><i class="fa-solid fa-palette"></i> ألوان متناسقة</button>
             </div>
+            
             <div class="panel">
                 <h3>📐 محاذاة</h3>
                 <div class="align-buttons">
@@ -57,6 +73,7 @@
                     <button id="alignBottom" title="أسفل"><i class="fa-solid fa-align-justify fa-rotate-90"></i></button>
                 </div>
             </div>
+            
             <div class="panel" id="selectedSettings" style="display:none;">
                 <h3>⚙️ تأثيرات العنصر</h3>
                 <div class="setting-row"><label>اللون:</label><input type="color" id="textColorPicker" value="#ffffff"></div>
@@ -67,12 +84,14 @@
                 <div class="setting-row"><label>تدوير:</label><input type="range" id="rotationSlider" min="-180" max="180" value="0"></div>
                 <button id="deleteSelectedBtn" class="btn-danger"><i class="fa-solid fa-trash"></i> حذف العنصر</button>
             </div>
+            
             <div class="panel">
                 <h3>📑 الطبقات</h3>
                 <ul id="layersList" class="layers-list"></ul>
                 <button id="bringForward" class="btn-sm"><i class="fa-solid fa-arrow-up"></i> للأمام</button>
                 <button id="sendBackward" class="btn-sm"><i class="fa-solid fa-arrow-down"></i> للخلف</button>
             </div>
+            
             <div class="panel">
                 <h3>💾 تحكم عام</h3>
                 <div class="action-row">
@@ -82,6 +101,7 @@
                 </div>
             </div>
         </aside>
+        
         <main class="canvas-area">
             <div class="canvas-toolbar">
                 <div class="size-presets">
@@ -103,8 +123,10 @@
             </div>
         </main>
     </div>
-    <script src="js/canvas.js"></script>
-    <script src="js/ai.js"></script>
-    <script src="js/ui.js"></script>
+    
+    <!-- ✅ JavaScript محلي (الروابط صحيحة: الملفات في نفس المجلد) -->
+    <script src="canvas.js"></script>
+    <script src="ai.js"></script>
+    <script src="ui.js"></script>
 </body>
 </html>
